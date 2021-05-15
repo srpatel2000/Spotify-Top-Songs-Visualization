@@ -44,6 +44,47 @@ app.layout = html.Div([
             dcc.Graph(id='line_graph')
         ]),
 
+
+    # dcc.Dropdown(
+    #     id='year_slider',
+    #     options = [
+    #         {'label':'2000', 'value':2000},
+    #         {'label':'2001', 'value':2001},
+    #         {'label':'2002', 'value':2002},
+    #         {'label':'2003', 'value':2003},
+    #         {'label':'2004', 'value':2004},
+    #         {'label':'2005', 'value':2005},  
+    #         {'label':'2006', 'value':2006},
+    #         {'label':'2007', 'value':2007},
+    #         {'label':'2008', 'value':2008},
+    #         {'label':'2009', 'value':2009},
+    #         {'label':'2010', 'value':2010},
+    #         {'label':'2011', 'value':2011},
+    #         {'label':'2012', 'value':2012},
+    #         {'label':'2013', 'value':2013},
+    #         {'label':'2014', 'value':2014},
+    #         {'label':'2015', 'value':2015},
+    #         {'label':'2016', 'value':2016},
+    #         {'label':'2017', 'value':2017},
+    #         {'label':'2018', 'value':2018},
+    #         {'label':'2019', 'value':2019}
+    #     ],
+    #     value = ['2019'],
+    #     multi = True),
+
+        html.Div([
+            dcc.Graph(id='genres_graph')
+        ]),
+
+        dcc.Slider(
+        id='year_slider',
+        min=top_songs['year'].min(),
+        max=top_songs['year'].max(),
+        value=top_songs['year'].min(),
+        marks={str(year): str(year) for year in top_songs['year'].unique()},
+        step=None
+    ),
+
 ])
 
 # -------------------------------------------------------------------------------------
@@ -68,6 +109,52 @@ def update_line_graph(selected_columns):
     )
 
     return fig
+
+@app.callback(
+    Output(component_id='genres_graph', component_property='figure'),
+    [Input(component_id='year_slider', component_property='value')]
+)
+def update_genres_graph(year_val):
+    line_copy = top_songs.copy()
+
+    #Preprocessing genre column
+    line_copy['artist_genre'] = line_copy['artist_genre'].apply(lambda x : x.replace('[', ''))
+    line_copy['artist_genre'] = line_copy['artist_genre'].apply(lambda x : x.replace(']', ''))
+    line_copy['artist_genre'] = line_copy['artist_genre'].apply(lambda x : x.replace("'", ''))
+    line_copy['artist_genre'] = line_copy['artist_genre'].apply(lambda x : x.split(','))
+
+    columns = ['artist_genre', 'year']
+
+    line_copy = line_copy[columns]
+
+    # Filter only the year
+    line_copy = line_copy.loc[line_copy['year'] == year_val]
+
+    # Count the song genres
+    genres = dict()
+    for lst in line_copy['artist_genre']:
+    
+        for genre in lst:
+            if genre in genres:
+                genres[genre] += 1
+            else:
+                genres[genre] = 1
+
+    # Get top artist genres and the song counts
+    top_genres_keys = sorted(genres, key=genres.get, reverse=True)[1:10]
+    top_genres_values = [genres[key] for key in top_genres_keys]
+    top_genres_values = [x/sum(top_genres_values) * 100 for x in top_genres_values] # Percentize the values
+
+    # Plot the graph
+    fig = px.bar(
+        x=top_genres_keys, 
+        y=top_genres_values,
+        title = 'Top Artist Genres in {0}'.format(str(year_val)),
+        labels={'x':'Artist Genre', 'y':'Percent of Songs (%)'}
+    )
+    
+    return fig
+
 
 # -------------------------------------------------------------------------------------
 # RUN THE APP 
