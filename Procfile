@@ -1,1 +1,1 @@
-web:gunicorn plotly-dash-script:server
+web: gunicorn plotly-dash-script:server
