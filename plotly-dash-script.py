@@ -7,9 +7,11 @@ import plotly.graph_objects as go
 import dash  # (version 1.12.0) pip install dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc #pip install dash-bootstrap-components
 from dash.dependencies import Input, Output
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, external_stylesheets = [dbc.themes.BOOTSTRAP])
+server = app.server
 
 # -------------------------------------------------------------------------------------
 # READ IN DATA
@@ -72,17 +74,30 @@ app.layout = html.Div([
     #     value = ['2019'],
     #     multi = True),
 
-        html.Div([
-            dcc.Graph(id='genres_graph')
-        ]),
+    html.Div([
+        dcc.Graph(id='genres_graph')
+    ]),
 
-        dcc.Slider(
-        id='year_slider',
-        min=top_songs['year'].min(),
-        max=top_songs['year'].max(),
-        value=top_songs['year'].min(),
-        marks={str(year): str(year) for year in top_songs['year'].unique()},
-        step=None
+    dcc.Slider(
+    id='genres_year_slider',
+    min=top_songs['year'].min(),
+    max=top_songs['year'].max(),
+    value=top_songs['year'].min(),
+    marks={str(year): str(year) for year in top_songs['year'].unique()},
+    step=None
+    ),
+
+    html.Div([
+        dcc.Graph(id='artists_graph')
+    ]),
+
+    dcc.Slider(
+    id='artists_year_slider',
+    min=top_songs['year'].min(),
+    max=top_songs['year'].max(),
+    value=top_songs['year'].min(),
+    marks={str(year): str(year) for year in top_songs['year'].unique()},
+    step=None
     ),
 
 ])
@@ -110,9 +125,10 @@ def update_line_graph(selected_columns):
 
     return fig
 
+#Genres graph callback
 @app.callback(
     Output(component_id='genres_graph', component_property='figure'),
-    [Input(component_id='year_slider', component_property='value')]
+    [Input(component_id='genres_year_slider', component_property='value')]
 )
 def update_genres_graph(year_val):
     line_copy = top_songs.copy()
@@ -127,7 +143,7 @@ def update_genres_graph(year_val):
 
     line_copy = line_copy[columns]
 
-    # Filter only the year
+    # Filter only the year input
     line_copy = line_copy.loc[line_copy['year'] == year_val]
 
     # Count the song genres
@@ -149,13 +165,52 @@ def update_genres_graph(year_val):
     fig = px.bar(
         x=top_genres_keys, 
         y=top_genres_values,
+        color = top_genres_keys,
         title = 'Top Artist Genres in {0}'.format(str(year_val)),
         labels={'x':'Artist Genre', 'y':'Percent of Songs (%)'}
     )
     
     return fig
 
+@app.callback(
+    Output(component_id='artists_graph', component_property='figure'),
+    [Input(component_id='artists_year_slider', component_property='value')]
+)
+def update_artists_graph(year_val):
+    line_copy = top_songs.copy()
 
+    #Preprocessing artists column
+    line_copy['artist_name'] = line_copy['artist_name'].apply(lambda x : x.replace('[', ''))
+    line_copy['artist_name'] = line_copy['artist_name'].apply(lambda x : x.replace(']', ''))
+    line_copy['artist_name'] = line_copy['artist_name'].apply(lambda x : x.replace("'", ''))
+    line_copy['artist_name'] = line_copy['artist_name'].apply(lambda x : x.split(','))
+
+    columns = ['artist_name', 'year']
+
+    #Filter out dataframe according to input year
+    line_copy = line_copy[columns]
+    line_copy = line_copy.loc[line_copy['year'] == year_val]
+
+    #Count the artists' song counts
+    artists_dict = dict()
+    for artists in line_copy['artist_name']:
+        for artist in artists:
+            if artist in artists_dict:
+                artists_dict[artist] += 1
+            else:
+                artists_dict[artist] = 1
+
+    # Get top artists names and the songs
+    top_artists_keys = sorted(artists_dict, key=artists_dict.get, reverse=True)[1:15]
+    top_artists_values = [artists_dict[key] for key in top_artists_keys]
+    #top_artists_values  = [x/sum(top_artists_values) * 100 for x in top_artists_values] # Percentize the values
+    
+    fig = px.bar(x=top_artists_keys,
+                 y=top_artists_values,
+                 color = top_artists_keys,
+                 title = 'Top Artists in {0}'.format(str(year_val)),
+                 labels={'x':'Artist Name','y':'Song Count'})
+    return fig
 # -------------------------------------------------------------------------------------
 # RUN THE APP 
 if __name__ == '__main__':
