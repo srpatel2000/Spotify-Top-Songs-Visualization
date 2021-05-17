@@ -1,14 +1,18 @@
 # IMPORT STATEMENTS
 
+# data processing
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+
+# daat visualizing
 import plotly.express as px  # (version 4.7.0)
 import plotly.graph_objects as go
-
 import dash  # (version 1.12.0) pip install dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc #pip install dash-bootstrap-components
 from dash.dependencies import Input, Output
+
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.BOOTSTRAP])
 server = app.server
@@ -22,9 +26,17 @@ top_songs = pd.read_csv('top_songs.csv')
 
 app.layout = html.Div([
 
-    html.H1("Spotify Top Songs Dashboard (DSC 106)", style={'text-align': 'center'}),
+    # title 
+    html.H1("Spotify Top Songs Dashboard", style={'text-align': 'center', 'color': '#1db954', 'font-family':"Montserrat"}),
+    # subheading
+    html.H3("DSC 106 Final Project", style={'text-align': 'center', 'color': '#1db954', 'font-family':"Montserrat"}),
+    # button
+    # html.A(html.Button("Renaldy Herlim", style={'color': 'dark gray 2', 'font-family':"Montserrat"}), href='https://www.linkedin.com/in/siddhipatel-stu/'),
+    # html.A(html.Button("Siddhi Patel", style={'color': 'dark gray 2', 'font-family':"Montserrat"}), href='https://www.linkedin.com/in/siddhipatel-stu/'),
 
+    # line graph checklist
     dcc.Checklist(
+        style={'color': 'white'},
         id='my_checklist',
         options = [
             {'label':'Danceability', 'value':'danceability'},
@@ -42,42 +54,17 @@ app.layout = html.Div([
             {'label':'Time Signature', 'value':'time_signature'},
         ],  value =['danceability']),
 
-         html.Div([
+        # line graph
+        html.Div([
             dcc.Graph(id='line_graph')
         ]),
 
-
-    # dcc.Dropdown(
-    #     id='year_slider',
-    #     options = [
-    #         {'label':'2000', 'value':2000},
-    #         {'label':'2001', 'value':2001},
-    #         {'label':'2002', 'value':2002},
-    #         {'label':'2003', 'value':2003},
-    #         {'label':'2004', 'value':2004},
-    #         {'label':'2005', 'value':2005},  
-    #         {'label':'2006', 'value':2006},
-    #         {'label':'2007', 'value':2007},
-    #         {'label':'2008', 'value':2008},
-    #         {'label':'2009', 'value':2009},
-    #         {'label':'2010', 'value':2010},
-    #         {'label':'2011', 'value':2011},
-    #         {'label':'2012', 'value':2012},
-    #         {'label':'2013', 'value':2013},
-    #         {'label':'2014', 'value':2014},
-    #         {'label':'2015', 'value':2015},
-    #         {'label':'2016', 'value':2016},
-    #         {'label':'2017', 'value':2017},
-    #         {'label':'2018', 'value':2018},
-    #         {'label':'2019', 'value':2019}
-    #     ],
-    #     value = ['2019'],
-    #     multi = True),
-
+    # genres bar chart title
     html.Div([
         dcc.Graph(id='genres_graph')
     ]),
 
+    # genres bar chart slider
     dcc.Slider(
     id='genres_year_slider',
     min=top_songs['year'].min(),
@@ -87,10 +74,13 @@ app.layout = html.Div([
     step=None
     ),
 
+
+    # artists bar chart title
     html.Div([
         dcc.Graph(id='artists_graph')
     ]),
 
+    # artists bar chart slider
     dcc.Slider(
     id='artists_year_slider',
     min=top_songs['year'].min(),
@@ -104,24 +94,43 @@ app.layout = html.Div([
 
 # -------------------------------------------------------------------------------------
 # CONNECT THE PLOTLY GRAPHS WITH DASH COMPONENTS 
+
+# Line graph callback
 @app.callback(
     Output(component_id='line_graph', component_property='figure'),
     [Input(component_id='my_checklist', component_property='value')]
 )
 
 def update_line_graph(selected_columns):
-    line_copy = top_songs.copy()
+    '''This function scales the columns in our dataset and creates a line graph for the different audio features.'''
+    line_copy = top_songs.copy() # always work with a copy of the original dataset
 
     columns = selected_columns +  ['year']
 
-    line_copy = line_copy[columns]
-    line_copy = top_songs.groupby('year', as_index=False).mean()
+    line_copy = line_copy[columns] # filter dataset for relevant columns
+    line_copy = top_songs.groupby('year', as_index=False).mean() # retrieve the mean values of audio features for every year
 
+    # scale the qualitative features to be between 0 and 1 to compare different values
+    scaler = MinMaxScaler()
+    line_copy_rel_cols = line_copy[line_copy.columns[2:]]
+    line_copy_scaled = pd.DataFrame(scaler.fit_transform(line_copy_rel_cols), columns=line_copy_rel_cols.columns)
+
+    # add scaled columns to original dataset
+    for cols in line_copy_scaled.columns:
+        line_copy[cols] = line_copy_scaled[cols]
+
+    # create line chart
     fig = px.line(
         data_frame = line_copy,
         x = 'year', 
         y = selected_columns
     )
+
+    fig.update_layout({
+    'plot_bgcolor': ' #212121',
+    'paper_bgcolor': ' #212121',
+    'font_color': 'white',
+    })
 
     return fig
 
@@ -169,6 +178,12 @@ def update_genres_graph(year_val):
         title = 'Top Artist Genres in {0}'.format(str(year_val)),
         labels={'x':'Artist Genre', 'y':'Percent of Songs (%)'}
     )
+
+    fig.update_layout({
+    'plot_bgcolor': ' #212121',
+    'paper_bgcolor': ' #212121',
+    'font_color': 'white',
+    })
     
     return fig
 
@@ -210,6 +225,13 @@ def update_artists_graph(year_val):
                  color = top_artists_keys,
                  title = 'Top Artists in {0}'.format(str(year_val)),
                  labels={'x':'Artist Name','y':'Song Count'})
+
+    fig.update_layout({
+    'plot_bgcolor': ' #212121',
+    'paper_bgcolor': ' #212121',
+    'font_color': 'white',
+    })
+
     return fig
 # -------------------------------------------------------------------------------------
 # RUN THE APP 
