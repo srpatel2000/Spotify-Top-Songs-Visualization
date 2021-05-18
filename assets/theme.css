@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;600&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;600&display=swap');
 
 /* Typography */
 body {
@@ -6,9 +6,33 @@ body {
     font-weight: 600;
 }
 
-/* .nav-pills a {
-    color: #ffffff;
-} */
+.nav-pills a {
+    color: #b3b3b3;
+    font: 'Montserrat', sans-serif; 
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.nav-pills a:hover {
+    color: white;
+    border-radius: 0px;
+    font: 'Montserrat', sans-serif; 
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.nav-pills .active a:hover {
+    color: white;
+    border-radius: 0px;
+    font: 'Montserrat', sans-serif; 
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.nav-pills .nav-link.active {
+    color: #fff;
+    background-color: #4b4a4adc;
+}
 
 H1 { 
     font-family: 'Montserrat', sans-serif; 
