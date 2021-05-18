@@ -93,30 +93,33 @@ def render_page_content(pathname):
             html.H1('Audio Features Over the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
             html.Hr(),
 
-            # line graph checklist
-            dcc.Checklist(
-                style={'color': 'white', 'margin-top': '10px'},
-                id='my_checklist',
-                options = [
-                    {'label':'Danceability', 'value':'danceability'},
-                    {'label':'Energy', 'value':'energy'},
-                    {'label':'Key', 'value':'key'},
-                    {'label':'Loudness', 'value':'loudness'},
-                    {'label':'Mode', 'value':'mode'},
-                    {'label':'Speechiness', 'value':'speechiness'},
-                    {'label':'Acousticness', 'value':'acousticness'},
-                    {'label':'Instrumentalness', 'value':'instrumentalness'},
-                    {'label':'Liveness', 'value':'liveness'},
-                    {'label':'Valence', 'value':'valence'},
-                    {'label':'Tempo', 'value':'tempo'},
-                    {'label':'Duration', 'value':'duration'},
-                    {'label':'Time Signature', 'value':'time_signature'},
-                ],  value =['danceability']),
+            html.Div(
+                [html.P('Select Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
+
+                # line graph checklist
+                dcc.Checklist(
+                    style={'color': 'black', 'font-family':"Montserrat", 'font-weight': "300", "font-size": "small"},
+                    id='my_checklist',
+                    options = [
+                        {'label':' Danceability', 'value':'danceability'},
+                        {'label':' Energy', 'value':'energy'},
+                        {'label':' Key', 'value':'key'},
+                        {'label':' Loudness', 'value':'loudness'},
+                        {'label':' Mode', 'value':'mode'},
+                        {'label':' Speechiness', 'value':'speechiness'},
+                        {'label':' Acousticness', 'value':'acousticness'},
+                        {'label':' Instrumentalness', 'value':'instrumentalness'},
+                        {'label':' Liveness', 'value':'liveness'},
+                        {'label':' Valence', 'value':'valence'},
+                        {'label':' Tempo', 'value':'tempo'},
+                        {'label':' Duration', 'value':'duration'},
+                        {'label':' Time Signature', 'value':'time_signature'},
+                ],  value =['danceability'], labelStyle = dict(display='block'))], style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}),
 
                 # line graph
                 html.Div([
                     dcc.Graph(id='line_graph')
-                ])
+                ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px"})
         ]
 
     elif pathname == "/page-4":
