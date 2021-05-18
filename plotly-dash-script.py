@@ -40,9 +40,9 @@ sidebar = html.Div(
             [
                 dbc.NavLink("Goals", href="/", active="exact", style={'text-align':'left'}),
                 dbc.NavLink("Audio Features Over the Years", href="/page-1", active="exact", style={'text-align':'left'}),
-                dbc.NavLink("Top Genres Throughout the Years", href="/page-2", active="exact", style={'text-align':'left'}),
+                dbc.NavLink("Sub-genre Audio Features Over the Years", href="/page-2", active="exact", style={'text-align':'left'}),
                 dbc.NavLink("Top Artists Throughout the Years", href="/page-3", active="exact", style={'text-align':'left'}),
-                dbc.NavLink("Sub-genre Audio Features Over the Years", href="/page-4", active="exact", style={'text-align':'left'}),
+                dbc.NavLink("Top Genres Throughout the Years", href="/page-4", active="exact", style={'text-align':'left'}),
             ],
             vertical=True,
             pills=True,
@@ -60,7 +60,7 @@ sidebar = html.Div(
     },
 )
 
-content = html.Div(id="page-content", children=[], style={"margin-left": "22rem", "margin-right": "2rem", "margin-top":"3rem", "padding": "5rem 1rem"})
+content = html.Div(id="page-content", children=[], style={"margin-left": "22rem", "margin-right": "2rem", "margin-top":"0rem", "padding": "2rem 1rem"})
 
 app.layout = html.Div([
     dcc.Location(id="url"),
@@ -80,14 +80,18 @@ app.layout = html.Div([
 def render_page_content(pathname):
     if pathname == "/":
         return [
-            html.H1('Goals', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid white"}),
-            html.H6('The goal of this project was for us to be able to learn new concepts while also visualizing interesting information about the "Top Songs" playlists on Spotify.', style={'textAlign':'left', "color":"white"})
+            html.H1('Goals', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
+            html.Hr(),
+            html.H6('The goal of this project was for us to be able to learn new concepts while also visualizing interesting information about the "Top Songs" playlists on Spotify.', style={'textAlign':'left', "color":"white"}),
+            html.Hr(),
+            html.H6('Through this project we were able refine our skills in: UI/UX, data retrieval, and data visualization.', style={'textAlign':'left', "color":"white"})
         ]
 
     elif pathname == "/page-1":
         return [
-                # html.H1('Kindergarten in Iran',
-                #         style={'textAlign':'center'}),
+
+            html.H1('Audio Features Over the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
+            html.Hr(),
 
             # line graph checklist
             dcc.Checklist(
@@ -115,11 +119,12 @@ def render_page_content(pathname):
                 ])
         ]
 
-    elif pathname == "/page-2":
+    elif pathname == "/page-4":
         return [
-                # html.H1('Grad School in Iran',
-                #         style={'textAlign':'center'}),
-                # genres bar chart title
+
+                html.H1('Top Genres Throughout the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
+                html.Hr(),
+
                 html.Div([
                 dcc.Graph(id='genres_graph')
                 ]),
@@ -137,9 +142,10 @@ def render_page_content(pathname):
 
     elif pathname == "/page-3":
         return [
-                # html.H1('High School in Iran',
-                #         style={'textAlign':'center'}),
-                # artists bar chart title
+
+                html.H1('Top Artists Throughout the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
+                html.Hr(),
+
                 html.Div([
                     dcc.Graph(id='artists_graph')
                 ]),
@@ -155,8 +161,13 @@ def render_page_content(pathname):
                 ),
         ]
 
-    elif pathname == "/page-4":
+    elif pathname == "/page-2":
         return [
+
+                html.H1('Sub-Genre Audio Features Over the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
+                html.Hr(),
+
+
                 #### Genres exploration graph ####
                 # Main Genre Selection
         html.Label("Select Main Genre", style={'fontSize':15, 'color':'white'}),

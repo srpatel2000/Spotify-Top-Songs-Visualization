@@ -36,6 +36,7 @@ body {
 
 H1 { 
     font-family: 'Montserrat', sans-serif; 
+    font-weight: 600;
     margin-top: 10px;
   }
 
@@ -45,7 +46,7 @@ H6 {
 
 H3 { 
     font-family: 'Montserrat', sans-serif; 
-    color: #1db954;
+    color: white;
     font-size: 15px;
   }
 
