@@ -263,7 +263,7 @@ def update_line_graph(selected_columns):
     )
 
     fig.update_layout({
-    'plot_bgcolor': ' #212121',s
+    'plot_bgcolor': ' #212121',
     'paper_bgcolor': ' #212121',
     'font_color': 'white',
     })
