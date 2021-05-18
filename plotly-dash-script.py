@@ -219,7 +219,7 @@ def render_page_content(pathname):
             #Graph of genres exploration
             html.Div([
                 dcc.Graph(id='genres_explore_fig'),
-            ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px"})
+            ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px", "height": "490px"})
                 ]
 
     # If the user tries to reach a different page, return a 404 message
@@ -427,7 +427,7 @@ def graph_genre_features(selected_subgenres, genre_feature):
         output = pd.concat([output, df])
         
         
-    fig = px.line(output, x='year', y=genre_feature, color = 'subgenre', title="Subgenres Audio Features Over Time")
+    fig = px.line(output, x='year', y=genre_feature, color = 'subgenre')
     
     fig.update_layout({
     'plot_bgcolor': ' #212121',
