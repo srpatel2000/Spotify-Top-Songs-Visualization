@@ -27,7 +27,7 @@ main_genres_options = ['pop', 'r&b', 'hip hop', 'rap', 'country', 'rock', 'metal
 
 sidebar = html.Div(
     [
-        html.H3("Spotify Top Songs Dashboard", className="display-4", style = {"font-size": "30px", "font-weight": "600"}),
+        html.H3("Spotify Top Songs Dashboard", className="display-4", style = {"font-size": "30px", "font-weight": "600", 'color': '#1DB954'}),
         # button
         html.A(html.Button("Renaldy Herlim", style={'background-color': '#212121', 'border': '2px solid', 'border-radius': '10px', 'font-family':"Montserrat", 'text-align': 'center', "font-weight": "600"}), href='https://www.linkedin.com/in/renaldy-herlim/', target='_blank'),
         html.A(html.Button("Siddhi Patel", style={'background-color': '#212121', 'border': '2px solid', 'border-radius': '10px', 'font-family':"Montserrat", 'text-align': 'center', "font-weight": "600"}), href='https://www.linkedin.com/in/siddhipatel-stu/', target='_blank'),
@@ -263,10 +263,13 @@ def update_line_graph(selected_columns):
     )
 
     fig.update_layout({
-    'plot_bgcolor': ' #212121',
+    'plot_bgcolor': ' #212121',s
     'paper_bgcolor': ' #212121',
     'font_color': 'white',
     })
+
+    fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='darkgray')
+    fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='darkgray')
 
     return fig
 
@@ -434,6 +437,9 @@ def graph_genre_features(selected_subgenres, genre_feature):
     'paper_bgcolor': ' #212121',
     'font_color': 'white',
     })
+
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='darkgray')
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='darkgray')
     
     return fig
 # -------------------------------------------------------------------------------------
