@@ -40,9 +40,9 @@ sidebar = html.Div(
             [
                 dbc.NavLink("Goals", href="/", active="exact", style={'text-align':'left'}),
                 dbc.NavLink("Audio Features Over the Years", href="/page-1", active="exact", style={'text-align':'left'}),
-                dbc.NavLink("Sub-genre Audio Features Over the Years", href="/page-2", active="exact", style={'text-align':'left'}),
-                dbc.NavLink("Top Artists Throughout the Years", href="/page-3", active="exact", style={'text-align':'left'}),
-                dbc.NavLink("Top Genres Throughout the Years", href="/page-4", active="exact", style={'text-align':'left'}),
+                dbc.NavLink("Sub-Genre Audio Features Over the Years", href="/page-2", active="exact", style={'text-align':'left'}),
+                dbc.NavLink("Top Artists Over the Years", href="/page-3", active="exact", style={'text-align':'left'}),
+                dbc.NavLink("Top Genres Over the Years", href="/page-4", active="exact", style={'text-align':'left'}),
             ],
             vertical=True,
             pills=True,
@@ -180,6 +180,7 @@ def render_page_content(pathname):
                 value = 'pop',
                 multi=True
             ),
+            html.Hr(),
     
             # Multi sub-genres selection
          html.Label("Select Sub-Genre", style={'fontSize':15, 'color':'white'}),
@@ -188,32 +189,37 @@ def render_page_content(pathname):
                 options = [],
                 multi = True
                 )   ,
+                html.Hr(),
 
             #Audio feature selection
-            html.Label("Select Audio Feature", style={'fontSize':15, 'color':'white'}),
-            dcc.Checklist(
-                style={'color': 'white'},
-                id='feature_checklist',
-                options = [
-                    {'label':'Danceability', 'value':'danceability'},
-                    {'label':'Energy', 'value':'energy'},
-                    {'label':'Key', 'value':'key'},
-                    {'label':'Loudness', 'value':'loudness'},
-                    {'label':'Mode', 'value':'mode'},
-                    {'label':'Speechiness', 'value':'speechiness'},
-                    {'label':'Acousticness', 'value':'acousticness'},
-                    {'label':'Instrumentalness', 'value':'instrumentalness'},
-                    {'label':'Liveness', 'value':'liveness'},
-                    {'label':'Valence', 'value':'valence'},
-                    {'label':'Tempo', 'value':'tempo'},
-                    {'label':'Duration', 'value':'duration'},
-                    {'label':'Time Signature', 'value':'time_signature'},
-                ],  value =['danceability']),
+            html.Div([
+                html.P('Select Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
+                dcc.RadioItems(
+                        style={'color': 'black', 'font-family':"Montserrat", 'font-weight': "300", "font-size": "small"},
+                        id='feature_checklist',
+                        options = [
+                            {'label':' Danceability', 'value':'danceability'},
+                            {'label':' Energy', 'value':'energy'},
+                            {'label':' Key', 'value':'key'},
+                            {'label':' Loudness', 'value':'loudness'},
+                            {'label':' Mode', 'value':'mode'},
+                            {'label':' Speechiness', 'value':'speechiness'},
+                            {'label':' Acousticness', 'value':'acousticness'},
+                            {'label':' Instrumentalness', 'value':'instrumentalness'},
+                            {'label':' Liveness', 'value':'liveness'},
+                            {'label':' Valence', 'value':'valence'},
+                            {'label':' Tempo', 'value':'tempo'},
+                            {'label':' Duration', 'value':'duration'},
+                            {'label':' Time Signature', 'value':'time_signature'},
+                    ],  value ='danceability', labelStyle = dict(display='block'))
+            ], style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}),
+
+            html.Hr(),
             
             #Graph of genres exploration
             html.Div([
-                dcc.Graph(id='genres_explore_fig')
-            ])
+                dcc.Graph(id='genres_explore_fig'),
+            ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px"})
                 ]
 
     # If the user tries to reach a different page, return a 404 message
