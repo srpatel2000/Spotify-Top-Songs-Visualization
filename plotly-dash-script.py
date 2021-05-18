@@ -20,6 +20,7 @@ server = app.server
 # -------------------------------------------------------------------------------------
 # READ IN DATA
 top_songs = pd.read_csv('top_songs.csv')
+main_genres_options = ['pop', 'r&b', 'hip hop', 'rap', 'country', 'rock', 'metal', 'house', 'edm', 'indie', 'punk', 'trap', 'reggae', 'latin', 'alternative']
 
 # -------------------------------------------------------------------------------------
 # APP LAYOUT 
@@ -41,6 +42,7 @@ sidebar = html.Div(
                 dbc.NavLink("Audio Features Over the Years", href="/page-1", active="exact", style={'text-align':'left'}),
                 dbc.NavLink("Top Genres Throughout the Years", href="/page-2", active="exact", style={'text-align':'left'}),
                 dbc.NavLink("Top Artists Throughout the Years", href="/page-3", active="exact", style={'text-align':'left'}),
+                dbc.NavLink("Sub-genre Audio Features Over the Years", href="/page-4", active="exact", style={'text-align':'left'}),
             ],
             vertical=True,
             pills=True,
@@ -152,6 +154,53 @@ def render_page_content(pathname):
                 step=None
                 ),
         ]
+
+    elif pathname == "/page-4":
+        return [
+                #### Genres exploration graph ####
+                # Main Genre Selection
+        html.Label("Select Main Genre", style={'fontSize':15, 'color':'white'}),
+            dcc.Dropdown(
+                id = 'main_genres',
+                options = [{'label': i, 'value': i} for i in main_genres_options],
+                value = 'pop',
+                multi=True
+            ),
+    
+            # Multi sub-genres selection
+         html.Label("Select Sub-Genre", style={'fontSize':15, 'color':'white'}),
+            dcc.Dropdown(
+                id = 'sub_genres',
+                options = [],
+                multi = True
+                )   ,
+
+            #Audio feature selection
+            html.Label("Select Audio Feature", style={'fontSize':15, 'color':'white'}),
+            dcc.Checklist(
+                style={'color': 'white'},
+                id='feature_checklist',
+                options = [
+                    {'label':'Danceability', 'value':'danceability'},
+                    {'label':'Energy', 'value':'energy'},
+                    {'label':'Key', 'value':'key'},
+                    {'label':'Loudness', 'value':'loudness'},
+                    {'label':'Mode', 'value':'mode'},
+                    {'label':'Speechiness', 'value':'speechiness'},
+                    {'label':'Acousticness', 'value':'acousticness'},
+                    {'label':'Instrumentalness', 'value':'instrumentalness'},
+                    {'label':'Liveness', 'value':'liveness'},
+                    {'label':'Valence', 'value':'valence'},
+                    {'label':'Tempo', 'value':'tempo'},
+                    {'label':'Duration', 'value':'duration'},
+                    {'label':'Time Signature', 'value':'time_signature'},
+                ],  value =['danceability']),
+            
+            #Graph of genres exploration
+            html.Div([
+                dcc.Graph(id='genres_explore_fig')
+            ])
+                ]
 
     # If the user tries to reach a different page, return a 404 message
     return dbc.Jumbotron(
@@ -299,6 +348,73 @@ def update_artists_graph(year_val):
     'font_color': 'white',
     })
 
+    return fig
+
+    #Genres Exploration Graph
+#Subgenres output callback
+@app.callback(
+    Output('sub_genres', 'options'),
+    Input('main_genres', 'value')
+)
+def set_subgenres_options(selected_genres):
+    line_copy = top_songs.copy()
+
+    line_copy['artist_genre'] = line_copy['artist_genre'].apply(lambda x : x.replace('[', ''))
+    line_copy['artist_genre'] = line_copy['artist_genre'].apply(lambda x : x.replace(']', ''))
+    line_copy['artist_genre'] = line_copy['artist_genre'].apply(lambda x : x.replace("'", ''))
+    line_copy['artist_genre'] = line_copy['artist_genre'].apply(lambda x : list(map(str.strip, x.split(','))))
+
+    
+    #Create subgenres dict for this main genre    
+    subgenres_options = dict()
+    for selected_genre in selected_genres:
+        for genres in line_copy['artist_genre']:
+            for genre in genres:
+                if selected_genre in genre:
+                    #Special case for 'rap' selection
+                    if (selected_genre == 'rap') & ('trap' in genre):
+                        continue
+
+                    #Add the subgenre to the dict
+                    subgenres_options[genre] = genre
+    
+    return [{'label': i, 'value': i} for i in subgenres_options.keys()]
+
+@app.callback(
+    Output('sub_genres', 'value'),
+    Input('sub_genres', 'options')
+)
+def set_subgenres_value(available_options):
+    return [available_options[0]['value']]
+
+@app.callback(
+    Output('genres_explore_fig', 'figure'),
+    Input('sub_genres', 'value'),
+    Input('feature_checklist', 'value')
+)
+def graph_genre_features(selected_subgenres, genre_feature):
+    #Takes in feature to graph
+    output = pd.DataFrame()
+    line_copy = top_songs.copy()
+
+    for genre in selected_subgenres:
+        #make line plot data
+        indices = [x for x in line_copy['artist_genre'].index if genre in line_copy['artist_genre'][x]]
+
+        df = line_copy.iloc[indices]
+        df = df.groupby('year').mean().reset_index()
+        df['subgenre'] = genre
+        output = pd.concat([output, df])
+        
+        
+    fig = px.line(output, x='year', y=genre_feature, color = 'subgenre', title="Subgenres Audio Features Over Time")
+    
+    fig.update_layout({
+    'plot_bgcolor': ' #212121',
+    'paper_bgcolor': ' #212121',
+    'font_color': 'white',
+    })
+    
     return fig
 # -------------------------------------------------------------------------------------
 # RUN THE APP 
