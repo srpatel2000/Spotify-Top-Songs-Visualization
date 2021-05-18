@@ -338,8 +338,14 @@ def graph_genre_features(selected_subgenres, genre_feature):
         output = pd.concat([output, df])
         
         
-    fig = px.line(output, x='year', y=genre_feature, color = 'subgenre')
-
+    fig = px.line(output, x='year', y=genre_feature, color = 'subgenre', title="Subgenres Audio Features Over Time")
+    
+    fig.update_layout({
+    'plot_bgcolor': ' #212121',
+    'paper_bgcolor': ' #212121',
+    'font_color': 'white',
+    })
+    
     return fig
 
 # -------------------------------------------------------------------------------------
