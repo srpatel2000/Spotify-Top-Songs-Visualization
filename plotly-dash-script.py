@@ -146,11 +146,10 @@ def render_page_content(pathname):
             html.Hr(),
 
             html.Div(
-                [html.P('1st Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
+                [html.P('2nd Audio Feature', style = {'color': 'white', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
 
                 # line graph checklist
-                dcc.RadioItems(
-                    style={'color': 'black', 'font-family':"Montserrat", 'font-weight': "300", "font-size": "small"},
+                dcc.Dropdown(
                     id='first-feature',
                     options = [
                         {'label':' Danceability', 'value':'danceability'},
@@ -167,25 +166,14 @@ def render_page_content(pathname):
                         {'label':' Duration', 'value':'duration'},
                         {'label':' Time Signature', 'value':'time_signature'},],
                     value ='danceability', 
-                    labelStyle = dict(display='block'))], 
-                style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}
+                    clearable=False),
+                ],style={'width': '48%', 'float': 'right', 'display': 'inline-block'}
             ),
-
-            html.Hr(),
-            
-            ### Graph for Classification Scatterplot ###
-            html.Div([
-                dcc.Graph(id='classification-scatterplot'),
-            ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px", "height": "490px"}),    
-
-            html.Hr(),
-
             html.Div(
-                [html.P('2nd Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
+                [html.P('1st Audio Feature', style = {'color': 'white', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
 
                 # line graph checklist
-                dcc.RadioItems(
-                    style={'color': 'black', 'font-family':"Montserrat", 'font-weight': "300", "font-size": "small"},
+                dcc.Dropdown(
                     id='second-feature',
                     options = [
                         {'label':' Danceability', 'value':'danceability'},
@@ -202,13 +190,16 @@ def render_page_content(pathname):
                         {'label':' Duration', 'value':'duration'},
                         {'label':' Time Signature', 'value':'time_signature'},],
                     value ='speechiness', 
-                    labelStyle = dict(display='block'))], 
-                style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}
+                    clearable=False)
+                    ],style={'width': '48%', 'float': 'right', 'display': 'inline-block'}
             ),
-            
             html.Hr(),
             
-
+            ### Graph for Classification Scatterplot ###
+            html.Div([
+                dcc.Graph(id='classification-scatterplot'),
+            ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px", "height": "490px"}),    
+            
         ]
     elif pathname == "/page-1":
         return [
@@ -242,7 +233,7 @@ def render_page_content(pathname):
                 # line graph
                 html.Div([
                     dcc.Graph(id='line_graph')
-                ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px"})
+                ], style={'display':'inline-block', "margin-left":"500px", "margin-top": "-500px", "width": "800px"})
         ]
 
     elif pathname == "/page-4":
