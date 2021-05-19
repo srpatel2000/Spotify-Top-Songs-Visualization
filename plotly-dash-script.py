@@ -660,7 +660,7 @@ def graph_correlation_cov_matrix(graph_type):
     
     #Drop the duplicate songs
     output = output.iloc[output['songs_id'].drop_duplicates().index]
-    output = output.iloc[:,6:-2] #select only the audio features
+    df = output.iloc[:,6:-2] #select only the audio features
 
     #Correlation matrix
     corr_df = df.corr()
@@ -726,43 +726,6 @@ def graph_correlation_cov_matrix(graph_type):
     #     fig=go.Figure(data=[heat], layout=layout)
 
     return fig
-
-# @app.callback(
-#     Output('covariance-matrix', 'figure')
-# )
-# @app.callback(
-#     Output('classification-scatterplot', 'figure'),
-#     Input('data-classification', 'data')
-# )
-# def knn(df):
-#     X = df.iloc[:,-2:] #Get the two selected features
-
-#     #Scale the quantitative variables to be between 0 and 1
-#     scaler = MinMaxScaler()
-#     X = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
-
-#     y = df['genre'] #Label is the genre
-
-#     #Split into train/test (80/20)
-#     X_train, X_test, y_train, y_test = train_test_split(X, y.astype(str), test_size=0.20, random_state=0)
-
-#     # Fit the model on training data, predict on test data
-#     clf = KNeighborsClassifier()
-#     clf.fit(X_train, y_train)
-#     y_score = clf.predict_proba(X_test)[:, 1]
-
-#     cols = X_test.columns
-#     y_cols = y_test.unique()
-#     fig = px.scatter(
-#         X_test, x=cols[0], y=cols[1],
-#         color=y_score, color_continuous_scale='RdBu',
-#         symbol=y_test, symbol_map={y_cols[0]: 'circle-dot', y_cols[1]: 'square-dot'},
-#         labels={'symbol': 'genre', 'color': 'Prediction Score: 0 ({0}) - 1 ({1})'.format(y_cols[0], y_cols[1])},
-#         title='Classifier Results {0} and {1} ({2},{3})'.format(y_cols[0], y_cols[1], cols[0], cols[1])
-#     )
-#     fig.update_traces(marker_size=11, marker_line_width=1.5)
-#     fig.update_layout(legend_orientation='h')
-#     return fig
 # -------------------------------------------------------------------------------------
 # RUN THE APP 
 if __name__ == '__main__':
