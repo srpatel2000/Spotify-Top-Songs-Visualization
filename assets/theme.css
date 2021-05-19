@@ -34,6 +34,10 @@ body {
     background-color: #4b4a4adc;
 }
 
+Hr { 
+    height:0px;
+  }
+
 H1 { 
     font-family: 'Montserrat', sans-serif; 
     font-weight: 600;

@@ -87,18 +87,18 @@ def render_page_content(pathname):
     if pathname == "/":
         return [
             html.H1('Goals', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-            html.Hr(style={"background-color": "#212121","text-decoration": "none"}),
+            html.Hr(style={"color": "#212121", "width":"0px"}),
             html.H6('The goal of this project was for us to be able to learn new concepts while also visualizing interesting information about the "Top Songs" playlists on Spotify.', style={'textAlign':'left', "color":"white"}),
-            html.Hr(style={"background-color": "#212121"}),
+            html.Hr(style={"background-color": "#212121", "width":"0px"}),
             html.H6('Through this project we were able refine our skills in: UI/UX, data retrieval, and data visualization. We will include our presentation for 5/20 here.', style={'textAlign':'left', "color":"white"}),
-            html.Hr(style={"background-color": "#212121"}),
+            html.Hr(style={"background-color": "#212121", "width":"0px"}),
             html.H6('Objectives: By measuring a song’s danceability, instrumentalness, etc, we will also be able to learn more about the technical aspects behind the music we listen to day-to-day, which we might not know until we visualize it. We will also take a look into the patterns of music throughout the years that are not quite obvious such as the genres and its subgenres to understand when certain genres are popular through the two decades. We will also explore the relationship between popular artists, genres and the audio features behind their songs to further understand why certain songs tend to be successful during their time.', style={'textAlign':'left', "color":"white"})
         ]
 
     elif pathname == "/page-5":
         return [
                 html.H1('Correlation Matrix of Audio Features', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-                html.Hr(),
+                html.Hr(style={"background-color": "#212121", "width":"0px"}),
                 html.Div([
                     dcc.Dropdown(
                         id='graph-type',
@@ -120,7 +120,7 @@ def render_page_content(pathname):
         available_indicators = ['r&b', 'hip hop', 'country', 'rock', 'metal', 'edm', 'indie', 'pop']
         return [
             html.H1('Features and Genres Classification', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-            html.Hr(),
+            html.Hr(style={"background-color": "#212121", "width":"0px"}),
 
             html.Div([
 
@@ -146,7 +146,7 @@ def render_page_content(pathname):
                 ],style={'width': '48%', 'float': 'right', 'display': 'inline-block', "margin-bottom": "20px"})
             ]),
             
-            html.Hr(),
+            html.Hr(style={"background-color": "#212121", "width":"0px"}),
 
             html.Div(
                 [html.P('1st Audio Feature', style = {'color': 'white', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
@@ -196,7 +196,7 @@ def render_page_content(pathname):
                     clearable=False)
                     ],style={'width': '48%', 'float': 'right', 'display': 'inline-block'}
             ),
-            html.Hr(),
+            html.Hr(style={"background-color": "#212121", "width":"0px"}),
             
             ### Graph for Classification Scatterplot ###
             html.Div([
@@ -209,7 +209,7 @@ def render_page_content(pathname):
         return [
 
             html.H1('Audio Features Over the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-            html.Hr(style={"background-color": "#212121"}),
+            html.Hr(style={"background-color": "#212121", "width":"0px"}),
 
             html.Div(
                 [html.P('Select Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
@@ -244,7 +244,7 @@ def render_page_content(pathname):
         return [
 
                 html.H1('Top Genres Throughout the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-                html.Hr(style={"background-color": "#212121"}),
+                html.Hr(style={"background-color": "#212121", "width":"0px"}),
 
                 html.Div([
                 dcc.Graph(id='genres_graph')
@@ -265,7 +265,7 @@ def render_page_content(pathname):
         return [
 
                 html.H1('Top Artists Throughout the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-                html.Hr(style={"background-color": "#212121"}),
+                html.Hr(style={"background-color": "#212121", "width":"0px"}),
 
                 html.Div([
                     dcc.Graph(id='artists_graph')
@@ -286,7 +286,7 @@ def render_page_content(pathname):
         return [
 
                 html.H1('Sub-Genre Audio Features Over the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-                html.Hr(style={"background-color": "#212121"}),
+                html.Hr(style={"background-color": "#212121", "width":"0px"}),
 
 
                 #### Genres exploration graph ####
@@ -298,7 +298,7 @@ def render_page_content(pathname):
                 value = 'pop',
                 multi=True
             ),
-            html.Hr(style={"background-color": "#212121"}),
+            html.Hr(style={"background-color": "#212121", "width":"0px"}),
     
             # Multi sub-genres selection
          html.Label("Select Sub-Genre", style={'fontSize':15, 'color':'white'}),
@@ -307,7 +307,7 @@ def render_page_content(pathname):
                 options = [],
                 multi = True
                 )   ,
-                html.Hr(style={"background-color": "#212121"}),
+                html.Hr(style={"background-color": "#212121", "width":"0px"}),
 
             #Audio feature selection
             html.Div([
@@ -332,7 +332,7 @@ def render_page_content(pathname):
                     ],  value ='danceability', labelStyle = dict(display='block'))
             ], style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}),
 
-            html.Hr(style={"background-color": "#212121"}),
+            html.Hr(style={"background-color": "#212121", "width":"0px"}),
             
             #Graph of genres exploration
             html.Div([
@@ -344,7 +344,7 @@ def render_page_content(pathname):
     return dbc.Jumbotron(
         [
             html.H1("404: Not found", className="text-danger", style={"color":"#212121"}),
-            html.Hr(style={"color":"#212121", "text-decoration": "none"}),
+            html.Hr(style={"background-color": "#212121", "width":"0px"}),
             html.P(f"The pathname {pathname} was not recognised.", style={"color":"#212121"}),
         ]
     )
