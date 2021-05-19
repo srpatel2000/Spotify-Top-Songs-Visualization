@@ -34,11 +34,11 @@ sidebar = html.Div(
         # button
         html.A(html.Button("Renaldy Herlim", style={'background-color': '#212121', 'border': '2px solid', 'border-radius': '10px', 'font-family':"Montserrat", 'text-align': 'center', "font-weight": "600"}), href='https://www.linkedin.com/in/renaldy-herlim/', target='_blank'),
         html.A(html.Button("Siddhi Patel", style={'background-color': '#212121', 'border': '2px solid', 'border-radius': '10px', 'font-family':"Montserrat", 'text-align': 'center', "font-weight": "600"}), href='https://www.linkedin.com/in/siddhipatel-stu/', target='_blank'),
-        html.Hr(),
+        html.Hr(style={"background-color": "black"}),
         html.P(
             "This dashboard was created for the SP'21 iteration of DSC106. It conveys different information about top songs throughout the years on Spotify.", className="lead", style = {"font-size": "15px"}
         ),
-        html.Hr(),
+        html.Hr(style={"background-color": "black"}),
         dbc.Nav(
             [
                 dbc.NavLink("Goals", href="/", active="exact", style={'text-align':'left'}),
@@ -85,16 +85,17 @@ def render_page_content(pathname):
     if pathname == "/":
         return [
             html.H1('Goals', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-            html.Hr(),
+            html.Hr(style={"background-color": "#212121","text-decoration": "none"}),
             html.H6('The goal of this project was for us to be able to learn new concepts while also visualizing interesting information about the "Top Songs" playlists on Spotify.', style={'textAlign':'left', "color":"white"}),
-            html.Hr(),
+            html.Hr(style={"background-color": "#212121"}),
             html.H6('Through this project we were able refine our skills in: UI/UX, data retrieval, and data visualization.', style={'textAlign':'left', "color":"white"})
         ]
+
     elif pathname == "/page-5":
         available_indicators = ['r&b', 'hip hop', 'country', 'rock', 'metal', 'edm', 'indie', 'pop']
         return [
             html.H1('Features and Genres Classification', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-            html.Hr(),
+            html.Hr(style={"background-color": "#212121"}),
 
             html.Div([
 
@@ -107,7 +108,7 @@ def render_page_content(pathname):
                         clearable=False
                     ),
                 ],
-                style={'width': '48%', 'display': 'inline-block'}),
+                style={'width': '48%', 'float': 'left', 'display': 'inline-block'}),
 
                 html.Div([
                     html.P('2nd Genre', style = {'color': 'white', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
@@ -120,7 +121,7 @@ def render_page_content(pathname):
                 ],style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
             ]),
             
-            html.Hr(),
+            html.Hr(style={"background-color": "#212121"}),
 
             html.Div(
                 [html.P('1st Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
@@ -145,17 +146,10 @@ def render_page_content(pathname):
                         {'label':' Time Signature', 'value':'time_signature'},],
                     value ='danceability', 
                     labelStyle = dict(display='block'))], 
-                style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}
+                style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "float":"left", "margin-left": "150px", "margin-top": "20px"}
             ),
 
-            html.Hr(),
-            
-            ### Graph for Classification Scatterplot ###
-            html.Div([
-                dcc.Graph(id='classification-scatterplot'),
-            ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px", "height": "490px"}),    
-
-            html.Hr(),
+            html.Hr(style={"background-color": "#212121"}),
 
             html.Div(
                 [html.P('2nd Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
@@ -180,18 +174,22 @@ def render_page_content(pathname):
                         {'label':' Time Signature', 'value':'time_signature'},],
                     value ='speechiness', 
                     labelStyle = dict(display='block'))], 
-                style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}
-            ),
+                style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "float":"right", "margin-right": "150px", "margin-top": "20px"}
+            ), 
             
-            html.Hr(),
-            
+            ### Graph for Classification Scatterplot ###
+            html.Div([
+                dcc.Graph(id='classification-scatterplot'),
+            ], style={'display':'inline-block', "margin-top": "20px", "width": "1000px", "height": "490px"}),    
 
+            html.Hr(style={"background-color": "#212121"}),
         ]
+
     elif pathname == "/page-1":
         return [
 
             html.H1('Audio Features Over the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-            html.Hr(),
+            html.Hr(style={"background-color": "#212121"}),
 
             html.Div(
                 [html.P('Select Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
@@ -226,7 +224,7 @@ def render_page_content(pathname):
         return [
 
                 html.H1('Top Genres Throughout the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-                html.Hr(),
+                html.Hr(style={"background-color": "#212121"}),
 
                 html.Div([
                 dcc.Graph(id='genres_graph')
@@ -247,7 +245,7 @@ def render_page_content(pathname):
         return [
 
                 html.H1('Top Artists Throughout the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-                html.Hr(),
+                html.Hr(style={"background-color": "#212121"}),
 
                 html.Div([
                     dcc.Graph(id='artists_graph')
@@ -268,7 +266,7 @@ def render_page_content(pathname):
         return [
 
                 html.H1('Sub-Genre Audio Features Over the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-                html.Hr(),
+                html.Hr(style={"background-color": "#212121"}),
 
 
                 #### Genres exploration graph ####
@@ -280,7 +278,7 @@ def render_page_content(pathname):
                 value = 'pop',
                 multi=True
             ),
-            html.Hr(),
+            html.Hr(style={"background-color": "#212121"}),
     
             # Multi sub-genres selection
          html.Label("Select Sub-Genre", style={'fontSize':15, 'color':'white'}),
@@ -289,7 +287,7 @@ def render_page_content(pathname):
                 options = [],
                 multi = True
                 )   ,
-                html.Hr(),
+                html.Hr(style={"background-color": "#212121"}),
 
             #Audio feature selection
             html.Div([
@@ -314,7 +312,7 @@ def render_page_content(pathname):
                     ],  value ='danceability', labelStyle = dict(display='block'))
             ], style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}),
 
-            html.Hr(),
+            html.Hr(style={"background-color": "#212121"}),
             
             #Graph of genres exploration
             html.Div([
@@ -326,7 +324,7 @@ def render_page_content(pathname):
     return dbc.Jumbotron(
         [
             html.H1("404: Not found", className="text-danger", style={"color":"#212121"}),
-            html.Hr(style={"color":"#212121"}),
+            html.Hr(style={"color":"#212121", "text-decoration": "none"}),
             html.P(f"The pathname {pathname} was not recognised.", style={"color":"#212121"}),
         ]
     )
@@ -423,6 +421,9 @@ def update_genres_graph(year_val):
     'paper_bgcolor': ' #212121',
     'font_color': 'white',
     })
+
+    fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='darkgray')
+    fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='darkgray')
     
     return fig
 
@@ -455,7 +456,7 @@ def update_artists_graph(year_val):
                 artists_dict[artist] = 1
 
     # Get top artists names and the songs
-    top_artists_keys = sorted(artists_dict, key=artists_dict.get, reverse=True)[1:15]
+    top_artists_keys = sorted(artists_dict, key=artists_dict.get, reverse=True)[1:11]
     top_artists_values = [artists_dict[key] for key in top_artists_keys]
     #top_artists_values  = [x/sum(top_artists_values) * 100 for x in top_artists_values] # Percentize the values
     
@@ -470,6 +471,9 @@ def update_artists_graph(year_val):
     'paper_bgcolor': ' #212121',
     'font_color': 'white',
     })
+
+    fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='darkgray')
+    fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='darkgray')
 
     return fig
 
@@ -609,6 +613,15 @@ def create_data_genre(first_genre, second_genre, first_feature, second_feature):
     )
     fig.update_traces(marker_size=11, marker_line_width=1.5)
     fig.update_layout(legend_orientation='h')
+
+    fig.update_layout({
+    'plot_bgcolor': ' #212121',
+    'paper_bgcolor': ' #212121',
+    'font_color': 'white',
+    })
+
+    fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='darkgray')
+    fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='darkgray')
 
     return fig
 
