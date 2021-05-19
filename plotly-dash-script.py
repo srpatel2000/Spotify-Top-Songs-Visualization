@@ -228,7 +228,7 @@ def render_page_content(pathname):
                 marks={str(year): str(year) for year in top_songs['year'].unique()},
                 step=None
                 )
-                ]
+    ]
 
     elif pathname == "/page-5":
         return [
