@@ -3,6 +3,7 @@
 # data processing
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+import numpy as np
 
 # daat visualizing
 import plotly.express as px  # (version 4.7.0)
@@ -46,7 +47,8 @@ sidebar = html.Div(
                 dbc.NavLink("Sub-Genre Audio Features Over the Years", href="/page-2", active="exact", style={'text-align':'left'}),
                 dbc.NavLink("Top Artists Over the Years", href="/page-3", active="exact", style={'text-align':'left'}),
                 dbc.NavLink("Top Genres Over the Years", href="/page-4", active="exact", style={'text-align':'left'}),
-                dbc.NavLink("Features and Genres Classification", href="/page-5", active="exact", style={'text-align':'left'}),
+                dbc.NavLink("Correlation Matrix of Audio Features", href="/page-5", active="exact", style={'text-align':'left'}),
+                dbc.NavLink("Features and Genres Classification", href="/page-6", active="exact", style={'text-align':'left'}),
             ],
             vertical=True,
             pills=True,
@@ -88,14 +90,37 @@ def render_page_content(pathname):
             html.Hr(style={"background-color": "#212121","text-decoration": "none"}),
             html.H6('The goal of this project was for us to be able to learn new concepts while also visualizing interesting information about the "Top Songs" playlists on Spotify.', style={'textAlign':'left', "color":"white"}),
             html.Hr(style={"background-color": "#212121"}),
-            html.H6('Through this project we were able refine our skills in: UI/UX, data retrieval, and data visualization.', style={'textAlign':'left', "color":"white"})
+            html.H6('Through this project we were able refine our skills in: UI/UX, data retrieval, and data visualization. We will include our presentation for 5/20 here.', style={'textAlign':'left', "color":"white"}),
+            html.Hr(style={"background-color": "#212121"}),
+            html.H6('Objectives: By measuring a song’s danceability, instrumentalness, etc, we will also be able to learn more about the technical aspects behind the music we listen to day-to-day, which we might not know until we visualize it. We will also take a look into the patterns of music throughout the years that are not quite obvious such as the genres and its subgenres to understand when certain genres are popular through the two decades. We will also explore the relationship between popular artists, genres and the audio features behind their songs to further understand why certain songs tend to be successful during their time.', style={'textAlign':'left', "color":"white"})
         ]
 
     elif pathname == "/page-5":
+        return [
+                html.H1('Correlation Matrix of Audio Features', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
+                html.Hr(),
+                html.Div([
+                    dcc.Dropdown(
+                        id='graph-type',
+                        options=[{'label': 'Correlation Matrix', 'value': 'correlation'}
+                            ],
+                        value='correlation',
+                        clearable=False
+                    )
+                    ]  
+                ),
+
+                html.Div([
+                    dcc.Graph(id='matrix', style = {"margin-left": "210px"})]
+                ),
+                
+            ]
+
+    elif pathname == "/page-6":
         available_indicators = ['r&b', 'hip hop', 'country', 'rock', 'metal', 'edm', 'indie', 'pop']
         return [
             html.H1('Features and Genres Classification', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-            html.Hr(style={"background-color": "#212121"}),
+            html.Hr(),
 
             html.Div([
 
@@ -108,7 +133,7 @@ def render_page_content(pathname):
                         clearable=False
                     ),
                 ],
-                style={'width': '48%', 'float': 'left', 'display': 'inline-block'}),
+                style={'width': '48%', 'float': 'left', 'display': 'inline-block', "margin-bottom": "20px"}),
 
                 html.Div([
                     html.P('2nd Genre', style = {'color': 'white', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
@@ -118,17 +143,16 @@ def render_page_content(pathname):
                         value='rock',
                         clearable=False
                     ),
-                ],style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+                ],style={'width': '48%', 'float': 'right', 'display': 'inline-block', "margin-bottom": "20px"})
             ]),
             
-            html.Hr(style={"background-color": "#212121"}),
+            html.Hr(),
 
             html.Div(
-                [html.P('1st Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
+                [html.P('1st Audio Feature', style = {'color': 'white', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
 
                 # line graph checklist
-                dcc.RadioItems(
-                    style={'color': 'black', 'font-family':"Montserrat", 'font-weight': "300", "font-size": "small"},
+                dcc.Dropdown(
                     id='first-feature',
                     options = [
                         {'label':' Danceability', 'value':'danceability'},
@@ -145,18 +169,14 @@ def render_page_content(pathname):
                         {'label':' Duration', 'value':'duration'},
                         {'label':' Time Signature', 'value':'time_signature'},],
                     value ='danceability', 
-                    labelStyle = dict(display='block'))], 
-                style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "float":"left", "margin-left": "150px", "margin-top": "20px"}
+                    clearable=False),
+                ],style={'width': '48%', 'float': 'left', 'display': 'inline-block'}
             ),
-
-            html.Hr(style={"background-color": "#212121"}),
-
             html.Div(
-                [html.P('2nd Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
+                [html.P('2nd Audio Feature', style = {'color': 'white', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
 
                 # line graph checklist
-                dcc.RadioItems(
-                    style={'color': 'black', 'font-family':"Montserrat", 'font-weight': "300", "font-size": "small"},
+                dcc.Dropdown(
                     id='second-feature',
                     options = [
                         {'label':' Danceability', 'value':'danceability'},
@@ -173,16 +193,16 @@ def render_page_content(pathname):
                         {'label':' Duration', 'value':'duration'},
                         {'label':' Time Signature', 'value':'time_signature'},],
                     value ='speechiness', 
-                    labelStyle = dict(display='block'))], 
-                style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "float":"right", "margin-right": "150px", "margin-top": "20px"}
-            ), 
+                    clearable=False)
+                    ],style={'width': '48%', 'float': 'right', 'display': 'inline-block'}
+            ),
+            html.Hr(),
             
             ### Graph for Classification Scatterplot ###
             html.Div([
                 dcc.Graph(id='classification-scatterplot'),
-            ], style={'display':'inline-block', "margin-top": "20px", "width": "1000px", "height": "490px"}),    
-
-            html.Hr(style={"background-color": "#212121"}),
+            ], style={"width": "1020px", 'display': 'inline-block', "margin-top": "20px"}),    
+            
         ]
 
     elif pathname == "/page-1":
@@ -625,39 +645,101 @@ def create_data_genre(first_genre, second_genre, first_feature, second_feature):
 
     return fig
 
-# @app.callback(
-#     Output('classification-scatterplot', 'figure'),
-#     Input('data-classification', 'data')
-# )
-# def knn(df):
-#     X = df.iloc[:,-2:] #Get the two selected features
+@app.callback(
+    Output('matrix', 'figure'),
+    Input('graph-type', 'value') 
+)
+def graph_correlation_cov_matrix(graph_type):
+    line_copy = top_songs.copy()
 
-#     #Scale the quantitative variables to be between 0 and 1
-#     scaler = MinMaxScaler()
-#     X = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
+    output = pd.DataFrame()
 
-#     y = df['genre'] #Label is the genre
+    main_genres_options = ['r&b', 'hip hop', 'country', 'rock', 'metal', 'edm', 'indie', 'pop']
 
-#     #Split into train/test (80/20)
-#     X_train, X_test, y_train, y_test = train_test_split(X, y.astype(str), test_size=0.20, random_state=0)
+    for genre in main_genres_options:
+        #make line plot data
+        indices = [x for x in line_copy['artist_genre'].index if genre in line_copy['artist_genre'][x]]
 
-#     # Fit the model on training data, predict on test data
-#     clf = KNeighborsClassifier()
-#     clf.fit(X_train, y_train)
-#     y_score = clf.predict_proba(X_test)[:, 1]
+        df = line_copy.loc[indices]
+        #df = df.groupby('year').mean().reset_index()
+        df['genre'] = genre
+        output = pd.concat([output, df])
+    
+    #Filter to only use data from selected genres
+    output = output.reset_index(drop=True)
+    
+    #Drop the duplicate songs
+    output = output.iloc[output['songs_id'].drop_duplicates().index]
+    df = output.iloc[:,6:-2] #select only the audio features
 
-#     cols = X_test.columns
-#     y_cols = y_test.unique()
-#     fig = px.scatter(
-#         X_test, x=cols[0], y=cols[1],
-#         color=y_score, color_continuous_scale='RdBu',
-#         symbol=y_test, symbol_map={y_cols[0]: 'circle-dot', y_cols[1]: 'square-dot'},
-#         labels={'symbol': 'genre', 'color': 'Prediction Score: 0 ({0}) - 1 ({1})'.format(y_cols[0], y_cols[1])},
-#         title='Classifier Results {0} and {1} ({2},{3})'.format(y_cols[0], y_cols[1], cols[0], cols[1])
-#     )
-#     fig.update_traces(marker_size=11, marker_line_width=1.5)
-#     fig.update_layout(legend_orientation='h')
-#     return fig
+    #Correlation matrix
+    corr_df = df.corr()
+
+    if graph_type == 'correlation':
+        mask = np.triu(np.ones_like(corr_df, dtype=bool))
+        rLT = corr_df.mask(mask)
+
+        heat = go.Heatmap(
+            z = rLT,
+            x = rLT.columns.values,
+            y = rLT.columns.values,
+            zmin = - 0.5, # Sets the lower bound of the color domain
+            zmax = 0.7,
+            xgap = 1, # Sets the horizontal gap (in pixels) between bricks
+            ygap = 1,
+            colorscale = 'RdBu'
+        )
+
+        layout = go.Layout(
+            title_x=0.5, 
+            width=600, 
+            height=600,
+            xaxis_showgrid=False,
+            yaxis_showgrid=False,
+            yaxis_autorange='reversed'
+        )
+
+        fig=go.Figure(data=[heat], layout=layout)
+
+        fig.update_layout({
+        'plot_bgcolor': ' #212121',
+        'paper_bgcolor': ' #212121',
+        'font_color': 'white',
+        })
+
+    return fig
+
+    # elif graph_type == 'covariance':
+    #     cov_matrix = np.cov(corr_df.to_numpy(), bias=True)
+    #     cov_df = pd.DataFrame(cov_matrix, index = df.columns, columns = df.columns)
+
+    #     rLT = cov_df
+
+    #     heat = go.Heatmap(
+    #         z = rLT,
+    #         x = rLT.columns.values,
+    #         y = rLT.columns.values,
+    #         zmin = - 0.2, # Sets the lower bound of the color domain
+    #         zmax = 0.2,
+    #         xgap = 1, # Sets the horizontal gap (in pixels) between bricks
+    #         ygap = 1,
+    #         colorscale = 'RdBu'
+    #     )
+
+    #     title = 'Covariance Matrix of Audio Features'
+
+    #     layout = go.Layout(
+    #         title_text=title, 
+    #         title_x=0.5, 
+    #         width=600, 
+    #         height=600,
+    #         xaxis_showgrid=False,
+    #         yaxis_showgrid=False,
+    #         yaxis_autorange='reversed'
+    #     )
+
+    #     fig=go.Figure(data=[heat], layout=layout)
+
 # -------------------------------------------------------------------------------------
 # RUN THE APP 
 if __name__ == '__main__':
