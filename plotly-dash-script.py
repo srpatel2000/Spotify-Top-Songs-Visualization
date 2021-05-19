@@ -3,6 +3,7 @@
 # data processing
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+import numpy as np
 
 # daat visualizing
 import plotly.express as px  # (version 4.7.0)
@@ -46,7 +47,9 @@ sidebar = html.Div(
                 dbc.NavLink("Sub-Genre Audio Features Over the Years", href="/page-2", active="exact", style={'text-align':'left'}),
                 dbc.NavLink("Top Artists Over the Years", href="/page-3", active="exact", style={'text-align':'left'}),
                 dbc.NavLink("Top Genres Over the Years", href="/page-4", active="exact", style={'text-align':'left'}),
-                dbc.NavLink("Features and Genres Classification", href="/page-5", active="exact", style={'text-align':'left'}),
+                dbc.NavLink("Correlation Matrix of Audio Features", href="/page-5", active="exact", style={'text-align':'left'}),
+                dbc.NavLink("Features and Genres Classification", href="/page-6", active="exact", style={'text-align':'left'}),
+
             ],
             vertical=True,
             pills=True,
@@ -91,6 +94,26 @@ def render_page_content(pathname):
             html.H6('Through this project we were able refine our skills in: UI/UX, data retrieval, and data visualization.', style={'textAlign':'left', "color":"white"})
         ]
     elif pathname == "/page-5":
+        return [
+            html.H1('Correlation Matrix of Audio Features', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
+
+            html.Div([
+                dcc.Dropdown(
+                    id='graph-type',
+                    options=[{'label': 'Correlation Matrix', 'value': 'correlation'}
+                        ],
+                    value='correlation',
+                    clearable=False
+                )
+                ]  
+            ),
+
+            html.Div([
+                dcc.Graph(id='matrix'),
+            ]),
+            
+        ]
+    elif pathname == "/page-6":
         available_indicators = ['r&b', 'hip hop', 'country', 'rock', 'metal', 'edm', 'indie', 'pop']
         return [
             html.H1('Features and Genres Classification', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
@@ -612,6 +635,101 @@ def create_data_genre(first_genre, second_genre, first_feature, second_feature):
 
     return fig
 
+@app.callback(
+    Output('matrix', 'figure'),
+    Input('graph-type', 'value') 
+)
+def graph_correlation_cov_matrix(graph_type):
+    line_copy = top_songs.copy()
+
+    output = pd.DataFrame()
+
+    main_genres_options = ['r&b', 'hip hop', 'country', 'rock', 'metal', 'edm', 'indie', 'pop']
+
+    for genre in main_genres_options:
+        #make line plot data
+        indices = [x for x in line_copy['artist_genre'].index if genre in line_copy['artist_genre'][x]]
+
+        df = line_copy.loc[indices]
+        #df = df.groupby('year').mean().reset_index()
+        df['genre'] = genre
+        output = pd.concat([output, df])
+    
+    #Filter to only use data from selected genres
+    output = output.reset_index(drop=True)
+    
+    #Drop the duplicate songs
+    output = output.iloc[output['songs_id'].drop_duplicates().index]
+    output = output.iloc[:,6:-2] #select only the audio features
+
+    #Correlation matrix
+    corr_df = df.corr()
+
+    if graph_type == 'correlation':
+        mask = np.triu(np.ones_like(corr_df, dtype=bool))
+        rLT = corr_df.mask(mask)
+
+        heat = go.Heatmap(
+            z = rLT,
+            x = rLT.columns.values,
+            y = rLT.columns.values,
+            zmin = - 0.5, # Sets the lower bound of the color domain
+            zmax = 0.7,
+            xgap = 1, # Sets the horizontal gap (in pixels) between bricks
+            ygap = 1,
+            colorscale = 'RdBu'
+        )
+
+        title = 'Correlation Matrix of the Audio Features'
+
+        layout = go.Layout(
+            title_text=title, 
+            title_x=0.5, 
+            width=600, 
+            height=600,
+            xaxis_showgrid=False,
+            yaxis_showgrid=False,
+            yaxis_autorange='reversed'
+        )
+
+        fig=go.Figure(data=[heat], layout=layout)
+
+    # elif graph_type == 'covariance':
+    #     cov_matrix = np.cov(corr_df.to_numpy(), bias=True)
+    #     cov_df = pd.DataFrame(cov_matrix, index = df.columns, columns = df.columns)
+
+    #     rLT = cov_df
+
+    #     heat = go.Heatmap(
+    #         z = rLT,
+    #         x = rLT.columns.values,
+    #         y = rLT.columns.values,
+    #         zmin = - 0.2, # Sets the lower bound of the color domain
+    #         zmax = 0.2,
+    #         xgap = 1, # Sets the horizontal gap (in pixels) between bricks
+    #         ygap = 1,
+    #         colorscale = 'RdBu'
+    #     )
+
+    #     title = 'Covariance Matrix of Audio Features'
+
+    #     layout = go.Layout(
+    #         title_text=title, 
+    #         title_x=0.5, 
+    #         width=600, 
+    #         height=600,
+    #         xaxis_showgrid=False,
+    #         yaxis_showgrid=False,
+    #         yaxis_autorange='reversed'
+    #     )
+
+    #     fig=go.Figure(data=[heat], layout=layout)
+
+    return fig
+
+# @app.callback(
+#     Output('covariance-matrix', 'figure')
+# )
 # @app.callback(
 #     Output('classification-scatterplot', 'figure'),
 #     Input('data-classification', 'data')
