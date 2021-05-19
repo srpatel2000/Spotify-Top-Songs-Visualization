@@ -95,6 +95,141 @@ def render_page_content(pathname):
             html.H6('Objectives: By measuring a song’s danceability, instrumentalness, etc, we will also be able to learn more about the technical aspects behind the music we listen to day-to-day, which we might not know until we visualize it. We will also take a look into the patterns of music throughout the years that are not quite obvious such as the genres and its subgenres to understand when certain genres are popular through the two decades. We will also explore the relationship between popular artists, genres and the audio features behind their songs to further understand why certain songs tend to be successful during their time.', style={'textAlign':'left', "color":"white"})
         ]
 
+    elif pathname == "/page-1":
+        return [
+
+            html.H1('Audio Features Over the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
+            html.Hr(style={"background-color": "#212121", "width":"0px"}),
+
+            html.Div(
+                [html.P('Select Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
+
+                # line graph checklist
+                dcc.Checklist(
+                    style={'color': 'black', 'font-family':"Montserrat", 'font-weight': "300", "font-size": "small"},
+                    id='my_checklist',
+                    options = [
+                        {'label':' Danceability', 'value':'danceability'},
+                        {'label':' Energy', 'value':'energy'},
+                        {'label':' Key', 'value':'key'},
+                        {'label':' Loudness', 'value':'loudness'},
+                        {'label':' Mode', 'value':'mode'},
+                        {'label':' Speechiness', 'value':'speechiness'},
+                        {'label':' Acousticness', 'value':'acousticness'},
+                        {'label':' Instrumentalness', 'value':'instrumentalness'},
+                        {'label':' Liveness', 'value':'liveness'},
+                        {'label':' Valence', 'value':'valence'},
+                        {'label':' Tempo', 'value':'tempo'},
+                        {'label':' Duration', 'value':'duration'},
+                        {'label':' Time Signature', 'value':'time_signature'},
+                ],  value =['danceability'], labelStyle = dict(display='block'))], style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}),
+
+                # line graph
+                html.Div([
+                    dcc.Graph(id='line_graph')
+                ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px"})
+        ]
+
+    elif pathname == "/page-2":
+        return [
+
+                html.H1('Sub-Genre Audio Features Over the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
+                html.Hr(style={"background-color": "#212121", "width":"0px"}),
+
+
+                #### Genres exploration graph ####
+                # Main Genre Selection
+        html.Label("Select Main Genre", style={'fontSize':15, 'color':'white'}),
+            dcc.Dropdown(
+                id = 'main_genres',
+                options = [{'label': i, 'value': i} for i in main_genres_options],
+                value = 'pop',
+                multi=True
+            ),
+            html.Hr(style={"background-color": "#212121", "width":"0px"}),
+    
+            # Multi sub-genres selection
+         html.Label("Select Sub-Genre", style={'fontSize':15, 'color':'white'}),
+            dcc.Dropdown(
+                id = 'sub_genres',
+                options = [],
+                multi = True
+                )   ,
+                html.Hr(style={"background-color": "#212121", "width":"0px"}),
+
+            #Audio feature selection
+            html.Div([
+                html.P('Select Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
+                dcc.RadioItems(
+                        style={'color': 'black', 'font-family':"Montserrat", 'font-weight': "300", "font-size": "small"},
+                        id='feature_checklist',
+                        options = [
+                            {'label':' Danceability', 'value':'danceability'},
+                            {'label':' Energy', 'value':'energy'},
+                            {'label':' Key', 'value':'key'},
+                            {'label':' Loudness', 'value':'loudness'},
+                            {'label':' Mode', 'value':'mode'},
+                            {'label':' Speechiness', 'value':'speechiness'},
+                            {'label':' Acousticness', 'value':'acousticness'},
+                            {'label':' Instrumentalness', 'value':'instrumentalness'},
+                            {'label':' Liveness', 'value':'liveness'},
+                            {'label':' Valence', 'value':'valence'},
+                            {'label':' Tempo', 'value':'tempo'},
+                            {'label':' Duration', 'value':'duration'},
+                            {'label':' Time Signature', 'value':'time_signature'},
+                    ],  value ='danceability', labelStyle = dict(display='block'))
+            ], style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}),
+
+            html.Hr(style={"background-color": "#212121", "width":"0px"}),
+            
+            #Graph of genres exploration
+            html.Div([
+                dcc.Graph(id='genres_explore_fig'),
+            ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px", "height": "490px"})
+                ]
+
+    elif pathname == "/page-3":
+        return [
+
+                html.H1('Top Artists Throughout the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
+                html.Hr(style={"background-color": "#212121", "width":"0px"}),
+
+                html.Div([
+                    dcc.Graph(id='artists_graph')
+                ]),
+
+                # artists bar chart slider
+                dcc.Slider(
+                id='artists_year_slider',
+                min=top_songs['year'].min(),
+                max=top_songs['year'].max(),
+                value=top_songs['year'].min(),
+                marks={str(year): str(year) for year in top_songs['year'].unique()},
+                step=None
+                ),
+        ]
+
+    elif pathname == "/page-4":
+        return [
+
+                html.H1('Top Genres Throughout the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
+                html.Hr(style={"background-color": "#212121", "width":"0px"}),
+
+                html.Div([
+                dcc.Graph(id='genres_graph')
+                ]),
+
+                # genres bar chart slider
+                dcc.Slider(
+                id='genres_year_slider',
+                min=top_songs['year'].min(),
+                max=top_songs['year'].max(),
+                value=top_songs['year'].min(),
+                marks={str(year): str(year) for year in top_songs['year'].unique()},
+                step=None
+                )
+                ]
+
     elif pathname == "/page-5":
         return [
                 html.H1('Correlation Matrix of Audio Features', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
@@ -204,141 +339,6 @@ def render_page_content(pathname):
             ], style={"width": "1020px", 'display': 'inline-block', "margin-top": "20px"}),    
             
         ]
-
-    elif pathname == "/page-1":
-        return [
-
-            html.H1('Audio Features Over the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-            html.Hr(style={"background-color": "#212121", "width":"0px"}),
-
-            html.Div(
-                [html.P('Select Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
-
-                # line graph checklist
-                dcc.Checklist(
-                    style={'color': 'black', 'font-family':"Montserrat", 'font-weight': "300", "font-size": "small"},
-                    id='my_checklist',
-                    options = [
-                        {'label':' Danceability', 'value':'danceability'},
-                        {'label':' Energy', 'value':'energy'},
-                        {'label':' Key', 'value':'key'},
-                        {'label':' Loudness', 'value':'loudness'},
-                        {'label':' Mode', 'value':'mode'},
-                        {'label':' Speechiness', 'value':'speechiness'},
-                        {'label':' Acousticness', 'value':'acousticness'},
-                        {'label':' Instrumentalness', 'value':'instrumentalness'},
-                        {'label':' Liveness', 'value':'liveness'},
-                        {'label':' Valence', 'value':'valence'},
-                        {'label':' Tempo', 'value':'tempo'},
-                        {'label':' Duration', 'value':'duration'},
-                        {'label':' Time Signature', 'value':'time_signature'},
-                ],  value =['danceability'], labelStyle = dict(display='block'))], style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}),
-
-                # line graph
-                html.Div([
-                    dcc.Graph(id='line_graph')
-                ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px"})
-        ]
-
-    elif pathname == "/page-4":
-        return [
-
-                html.H1('Top Genres Throughout the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-                html.Hr(style={"background-color": "#212121", "width":"0px"}),
-
-                html.Div([
-                dcc.Graph(id='genres_graph')
-                ]),
-
-                # genres bar chart slider
-                dcc.Slider(
-                id='genres_year_slider',
-                min=top_songs['year'].min(),
-                max=top_songs['year'].max(),
-                value=top_songs['year'].min(),
-                marks={str(year): str(year) for year in top_songs['year'].unique()},
-                step=None
-                )
-                ]
-
-    elif pathname == "/page-3":
-        return [
-
-                html.H1('Top Artists Throughout the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-                html.Hr(style={"background-color": "#212121", "width":"0px"}),
-
-                html.Div([
-                    dcc.Graph(id='artists_graph')
-                ]),
-
-                # artists bar chart slider
-                dcc.Slider(
-                id='artists_year_slider',
-                min=top_songs['year'].min(),
-                max=top_songs['year'].max(),
-                value=top_songs['year'].min(),
-                marks={str(year): str(year) for year in top_songs['year'].unique()},
-                step=None
-                ),
-        ]
-
-    elif pathname == "/page-2":
-        return [
-
-                html.H1('Sub-Genre Audio Features Over the Years', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
-                html.Hr(style={"background-color": "#212121", "width":"0px"}),
-
-
-                #### Genres exploration graph ####
-                # Main Genre Selection
-        html.Label("Select Main Genre", style={'fontSize':15, 'color':'white'}),
-            dcc.Dropdown(
-                id = 'main_genres',
-                options = [{'label': i, 'value': i} for i in main_genres_options],
-                value = 'pop',
-                multi=True
-            ),
-            html.Hr(style={"background-color": "#212121", "width":"0px"}),
-    
-            # Multi sub-genres selection
-         html.Label("Select Sub-Genre", style={'fontSize':15, 'color':'white'}),
-            dcc.Dropdown(
-                id = 'sub_genres',
-                options = [],
-                multi = True
-                )   ,
-                html.Hr(style={"background-color": "#212121", "width":"0px"}),
-
-            #Audio feature selection
-            html.Div([
-                html.P('Select Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
-                dcc.RadioItems(
-                        style={'color': 'black', 'font-family':"Montserrat", 'font-weight': "300", "font-size": "small"},
-                        id='feature_checklist',
-                        options = [
-                            {'label':' Danceability', 'value':'danceability'},
-                            {'label':' Energy', 'value':'energy'},
-                            {'label':' Key', 'value':'key'},
-                            {'label':' Loudness', 'value':'loudness'},
-                            {'label':' Mode', 'value':'mode'},
-                            {'label':' Speechiness', 'value':'speechiness'},
-                            {'label':' Acousticness', 'value':'acousticness'},
-                            {'label':' Instrumentalness', 'value':'instrumentalness'},
-                            {'label':' Liveness', 'value':'liveness'},
-                            {'label':' Valence', 'value':'valence'},
-                            {'label':' Tempo', 'value':'tempo'},
-                            {'label':' Duration', 'value':'duration'},
-                            {'label':' Time Signature', 'value':'time_signature'},
-                    ],  value ='danceability', labelStyle = dict(display='block'))
-            ], style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}),
-
-            html.Hr(style={"background-color": "#212121", "width":"0px"}),
-            
-            #Graph of genres exploration
-            html.Div([
-                dcc.Graph(id='genres_explore_fig'),
-            ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px", "height": "490px"})
-                ]
 
     # If the user tries to reach a different page, return a 404 message
     return dbc.Jumbotron(
