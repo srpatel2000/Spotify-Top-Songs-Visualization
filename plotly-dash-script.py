@@ -12,6 +12,9 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc #pip install dash-bootstrap-components
 from dash.dependencies import Input, Output
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+
 
 
 app = dash.Dash(__name__, external_stylesheets = [dbc.themes.BOOTSTRAP], suppress_callback_exceptions = True)
@@ -43,6 +46,7 @@ sidebar = html.Div(
                 dbc.NavLink("Sub-Genre Audio Features Over the Years", href="/page-2", active="exact", style={'text-align':'left'}),
                 dbc.NavLink("Top Artists Over the Years", href="/page-3", active="exact", style={'text-align':'left'}),
                 dbc.NavLink("Top Genres Over the Years", href="/page-4", active="exact", style={'text-align':'left'}),
+                dbc.NavLink("Features and Genres Classification", href="/page-5", active="exact", style={'text-align':'left'}),
             ],
             vertical=True,
             pills=True,
@@ -86,7 +90,103 @@ def render_page_content(pathname):
             html.Hr(),
             html.H6('Through this project we were able refine our skills in: UI/UX, data retrieval, and data visualization.', style={'textAlign':'left', "color":"white"})
         ]
+    elif pathname == "/page-5":
+        available_indicators = ['r&b', 'hip hop', 'country', 'rock', 'metal', 'edm', 'indie', 'pop']
+        return [
+            html.H1('Features and Genres Classification', style={'textAlign':'left', "color":"white", "border-bottom": "1px solid #535353", "line-height": "80px"}),
+            html.Hr(),
 
+            html.Div([
+
+                html.Div([
+                    html.P('1st Genre', style = {'color': 'white', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
+                    dcc.Dropdown(
+                        id='first-genre',
+                        options=[{'label': i, 'value': i} for i in available_indicators],
+                        value='pop',
+                        clearable=False
+                    ),
+                ],
+                style={'width': '48%', 'display': 'inline-block'}),
+
+                html.Div([
+                    html.P('2nd Genre', style = {'color': 'white', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
+                    dcc.Dropdown(
+                        id='second-genre',
+                        options=[{'label': i, 'value': i} for i in available_indicators],
+                        value='rock',
+                        clearable=False
+                    ),
+                ],style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+            ]),
+            
+            html.Hr(),
+
+            html.Div(
+                [html.P('1st Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
+
+                # line graph checklist
+                dcc.RadioItems(
+                    style={'color': 'black', 'font-family':"Montserrat", 'font-weight': "300", "font-size": "small"},
+                    id='first-feature',
+                    options = [
+                        {'label':' Danceability', 'value':'danceability'},
+                        {'label':' Energy', 'value':'energy'},
+                        {'label':' Key', 'value':'key'},
+                        {'label':' Loudness', 'value':'loudness'},
+                        {'label':' Mode', 'value':'mode'},
+                        {'label':' Speechiness', 'value':'speechiness'},
+                        {'label':' Acousticness', 'value':'acousticness'},
+                        {'label':' Instrumentalness', 'value':'instrumentalness'},
+                        {'label':' Liveness', 'value':'liveness'},
+                        {'label':' Valence', 'value':'valence'},
+                        {'label':' Tempo', 'value':'tempo'},
+                        {'label':' Duration', 'value':'duration'},
+                        {'label':' Time Signature', 'value':'time_signature'},],
+                    value ='danceability', 
+                    labelStyle = dict(display='block'))], 
+                style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}
+            ),
+
+            html.Hr(),
+            
+            ### Graph for Classification Scatterplot ###
+            html.Div([
+                dcc.Graph(id='classification-scatterplot'),
+            ], style={'display':'inline-block', "margin-left":"220px", "margin-top": "-500px", "width": "800px", "height": "490px"}),    
+
+            html.Hr(),
+
+            html.Div(
+                [html.P('2nd Audio Feature', style = {'color': 'black', 'font-family':"Montserrat", 'text-decoration': 'underline'}),
+
+                # line graph checklist
+                dcc.RadioItems(
+                    style={'color': 'black', 'font-family':"Montserrat", 'font-weight': "300", "font-size": "small"},
+                    id='second-feature',
+                    options = [
+                        {'label':' Danceability', 'value':'danceability'},
+                        {'label':' Energy', 'value':'energy'},
+                        {'label':' Key', 'value':'key'},
+                        {'label':' Loudness', 'value':'loudness'},
+                        {'label':' Mode', 'value':'mode'},
+                        {'label':' Speechiness', 'value':'speechiness'},
+                        {'label':' Acousticness', 'value':'acousticness'},
+                        {'label':' Instrumentalness', 'value':'instrumentalness'},
+                        {'label':' Liveness', 'value':'liveness'},
+                        {'label':' Valence', 'value':'valence'},
+                        {'label':' Tempo', 'value':'tempo'},
+                        {'label':' Duration', 'value':'duration'},
+                        {'label':' Time Signature', 'value':'time_signature'},],
+                    value ='speechiness', 
+                    labelStyle = dict(display='block'))], 
+                style={'display':'inline-block', 'border-radius': '10px', 'background-color': 'white', 'border': 'solid white', "padding": "20px", "margin": "0"}
+            ),
+            
+            html.Hr(),
+            
+
+        ]
     elif pathname == "/page-1":
         return [
 
@@ -442,6 +542,109 @@ def graph_genre_features(selected_subgenres, genre_feature):
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='darkgray')
     
     return fig
+
+@app.callback(
+    Output('classification-scatterplot', 'figure'),
+    Input('first-genre', 'value'),
+    Input('second-genre', 'value'),
+    Input('first-feature', 'value'),
+    Input('second-feature', 'value')
+)
+def create_data_genre(first_genre, second_genre, first_feature, second_feature):
+    line_copy = top_songs.copy()
+
+    #Genres to graph
+    selected_genres = [first_genre, second_genre]
+    features = [first_feature, second_feature]
+    output = pd.DataFrame()
+
+    main_genres_options = ['r&b', 'hip hop', 'country', 'rock', 'metal', 'edm', 'indie', 'pop']
+
+    for genre in main_genres_options:
+        #make line plot data
+        indices = [x for x in line_copy['artist_genre'].index if genre in line_copy['artist_genre'][x]]
+
+        df = line_copy.loc[indices]
+        #df = df.groupby('year').mean().reset_index()
+        df['genre'] = genre
+        output = pd.concat([output, df])
+    
+    #Filter to only use data from selected genres
+    output = output.loc[(output['genre'] == selected_genres[0]) | (output['genre'] == selected_genres[1])].reset_index(drop=True)
+    
+    #Drop the duplicate songs
+    output = output.iloc[output['songs_id'].drop_duplicates().index]
+
+    #Select relevant columns and features chosen
+    columns = ['genre', 'songs_id', 'songs_name', 'artist_name', 'year'] + features
+    
+    #DataFrame of the selected parameters
+    df = output[columns]
+    
+    #Label and feature df
+    X = df.iloc[:,-2:] #Get the two selected features
+    y = df['genre'] #Label is the genre
+
+    #Scale the quantitative variables to be between 0 and 1
+    scaler = MinMaxScaler()
+    X = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
+
+
+    #Split into train/test (80/20)
+    X_train, X_test, y_train, y_test = train_test_split(X, y.astype(str), test_size=0.20, random_state=0)
+
+    # Fit the model on training data, predict on test data
+    clf = KNeighborsClassifier()
+    clf.fit(X_train, y_train)
+    y_score = clf.predict_proba(X_test)[:, 1]
+
+    cols = X_test.columns
+    y_cols = y_test.unique()
+    fig = px.scatter(
+        X_test, x=cols[0], y=cols[1],
+        color=y_score, color_continuous_scale='RdBu',
+        symbol=y_test, symbol_map={y_cols[0]: 'circle-dot', y_cols[1]: 'square-dot'},
+        labels={'symbol': 'genre', 'color': 'Prediction Score: 0 ({0}) - 1 ({1})'.format(y_cols[0], y_cols[1])},
+        title='Classifier Results {0} and {1} ({2},{3})'.format(y_cols[0], y_cols[1], cols[0], cols[1])
+    )
+    fig.update_traces(marker_size=11, marker_line_width=1.5)
+    fig.update_layout(legend_orientation='h')
+
+    return fig
+
+# @app.callback(
+#     Output('classification-scatterplot', 'figure'),
+#     Input('data-classification', 'data')
+# )
+# def knn(df):
+#     X = df.iloc[:,-2:] #Get the two selected features
+
+#     #Scale the quantitative variables to be between 0 and 1
+#     scaler = MinMaxScaler()
+#     X = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
+
+#     y = df['genre'] #Label is the genre
+
+#     #Split into train/test (80/20)
+#     X_train, X_test, y_train, y_test = train_test_split(X, y.astype(str), test_size=0.20, random_state=0)
+
+#     # Fit the model on training data, predict on test data
+#     clf = KNeighborsClassifier()
+#     clf.fit(X_train, y_train)
+#     y_score = clf.predict_proba(X_test)[:, 1]
+
+#     cols = X_test.columns
+#     y_cols = y_test.unique()
+#     fig = px.scatter(
+#         X_test, x=cols[0], y=cols[1],
+#         color=y_score, color_continuous_scale='RdBu',
+#         symbol=y_test, symbol_map={y_cols[0]: 'circle-dot', y_cols[1]: 'square-dot'},
+#         labels={'symbol': 'genre', 'color': 'Prediction Score: 0 ({0}) - 1 ({1})'.format(y_cols[0], y_cols[1])},
+#         title='Classifier Results {0} and {1} ({2},{3})'.format(y_cols[0], y_cols[1], cols[0], cols[1])
+#     )
+#     fig.update_traces(marker_size=11, marker_line_width=1.5)
+#     fig.update_layout(legend_orientation='h')
+#     return fig
 # -------------------------------------------------------------------------------------
 # RUN THE APP 
 if __name__ == '__main__':
