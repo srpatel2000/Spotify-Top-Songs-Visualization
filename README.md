@@ -1,6 +1,6 @@
 # Spotify-Top-Songs-Visualization
 
-This Web Application was made with Plotly Dash. 
+This Web Application was made with Plotly Dash and is optimized for viewing on a laptop.
 
 The web application is deployed on Heroku: https://spotify-top-hits.herokuapp.com/
 
